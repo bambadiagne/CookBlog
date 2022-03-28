@@ -1,0 +1,30 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres
+    volumes:
+      - cookblog-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${DATABASE_NAME_PG}
+      - POSTGRES_USER=${USER_PG}
+      - POSTGRES_PASSWORD=${PASSWORD_PG}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_NAME_PG=${DATABASE_NAME_PG}
+      - USER_PG=${USER_PG}
+      - PASSWORD_PG=${PASSWORD_PG}
+      - DEBUG=0
+      - HOST_PG=db
+    depends_on:
+      - db
+volumes:
+  cookblog-data:
+  
